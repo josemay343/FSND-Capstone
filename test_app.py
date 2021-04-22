@@ -24,6 +24,24 @@ class DealershipTestCase(unittest.TestCase):
             'year': 2000,
             'color': 'test',
         }
+
+        self.error_new_vehicle = {
+            'make': '',
+            'model': 'test',
+            'year': 2001,
+            'color': 'red'
+        }
+
+        self.error_new_sale = {
+            'customer_id': '',
+            'vehicle_id': ''
+        }
+        self.error_new_customer = {
+            'first_name': '',
+            'last_name': 'test',
+            'phone_number': '1234',
+            'address': 'test'
+        }
         # binds the app to the current context
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -42,6 +60,47 @@ class DealershipTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(data['vehicles'])
+
+    def test_422_post_vehicles(self):
+        res = self.client().post('/vehicles', json=self.error_new_vehicle)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')
+
+    def test_get_sales(self):
+        res = self.client().get('/sales')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['sales'])
+
+    def test_422_post_sales(self):
+        res = self.client().post('/sales', json=self.error_new_sale)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')
+
+    def test_get_customers(self):
+        res = self.client().get('/customers')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['customers'])
+
+    def test_422_post_customers(self):
+        res = self.client().post('/customers', json=self.error_new_customer)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'unprocessable')
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":

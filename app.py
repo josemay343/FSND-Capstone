@@ -43,7 +43,7 @@ def create_app():
     @app.route('/vehicles', methods=['POST'])
     def add_vehicle():
         body = request.get_json()
-        if 'make' not in body or 'model' not in body:
+        if body.get('make') == '' or body.get('model') == '':
             abort(422)
 
         try:
@@ -120,7 +120,7 @@ def create_app():
     @app.route('/sales', methods=['POST'])
     def create_sale():
         body = request.get_json()
-        if 'vehicle_id' not in body or 'customer_id' not in body:
+        if body.get('vehicle_id') == '' or body.get('customer_id') == '':
             abort(422)
 
         try:
@@ -177,7 +177,7 @@ def create_app():
     @app.route('/customers', methods=['POST'])
     def create_customer():
         body = request.get_json()
-        if 'first_name' not in body or 'last_name' not in body:
+        if body.get('first_name') == '' or body.get('last_name') == '':
             abort(422)
 
         try:
@@ -272,6 +272,14 @@ def create_app():
             'error': 404,
             'message': 'resource not found'
         }), 404
+
+    @app.errorhandler(405)
+    def method_not_allowed(error):
+        return jsonify({
+            'success': False,
+            'error': 405,
+            'message': 'method is not allowed'
+        }), 405
 
     @app.errorhandler(422)
     def not_found(error):
