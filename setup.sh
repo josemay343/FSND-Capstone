@@ -1,6 +1,6 @@
-export DATABASE_URL='postgresql://yosef@localhost:5432/dealership'
+export DATABASE_URL='postgres://yosef@localhost:5432/dealership'
 export HEROKU_DATABASE_URL='postgres://dvveonaajlkbdz:34f073c181a21219901b6cbe99e3cdc00fe96ad87ca08495b7f864493ada61c1@ec2-54-166-167-192.compute-1.amazonaws.com:5432/d8lkc1uivdjn8a'
-export TEST_DATABASE_URL='postgresql://yosef@localhost:5432/dealership'
+export TEST_DATABASE_URL='postgres://yosef@localhost:5432/dealership_test'
 export AUTH0_DOMAIN='fsnd343.us.auth0.com'
 export ALGORITHMS=['RS256']
 export API_AUDIENCE='dealership'
