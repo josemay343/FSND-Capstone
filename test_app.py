@@ -17,7 +17,7 @@ class DealershipTestCase(unittest.TestCase):
         self.manager = os.environ.get('MANAGER')
         self.owner = os.environ.get('OWNER')
         self.database_name = os.environ.get('TEST_DATABASE_NAME')
-        self.database_path = os.environ.get('DATABASE_URL')
+        self.database_path = os.environ.get('TEST_DATABASE_URL')
         setup_db(self.app, self.database_path)
 
         self.new_vehicle = {

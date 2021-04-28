@@ -10,7 +10,7 @@ database_path = "postgres://dvveonaajlkbdz:34f073c181a21219901b6cbe99e3cdc00fe96
 db = SQLAlchemy()
 
 def setup_db(app, database_path=database_path):
-    app.config["SQLALCHEMY_DATABASE_URI"] = database_path
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('HEROKU_DATABASE_URL').replace('://', 'ql://', 1)
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config['JSON_SORT_KEYS'] = False
     db.app = app
