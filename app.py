@@ -6,6 +6,8 @@ from flask_cors import CORS
 import json
 import random
 
+from auth.auth import AuthError, requires_auth
+
 from models import *
 
 #----------------------------------------------------------------------------#
@@ -41,7 +43,8 @@ def create_app():
         })
     # only salesrep, manager and owner have access
     @app.route('/vehicles', methods=['POST'])
-    def add_vehicle():
+    @requires_auth('post:vehicles')
+    def add_vehicle(token):
         body = request.get_json()
         if body.get('make') == '' or body.get('model') == '':
             abort(422)
@@ -63,7 +66,8 @@ def create_app():
 
     # only salesrep, manager and owner have access
     @app.route('/vehicles/<vehicle_id>', methods=['PATCH'])
-    def update_vehicle(vehicle_id):
+    @requires_auth('patch:vehicles')
+    def update_vehicle(token, vehicle_id):
         body = request.get_json()
         make = body.get('make')
         model = body.get('model')
@@ -96,7 +100,8 @@ def create_app():
 
     # only manager and owner have access
     @app.route('/vehicles/<vehicle_id>', methods=['DELETE'])
-    def delete_vehicle(vehicle_id):
+    @requires_auth('delete:vehicles')
+    def delete_vehicle(token, vehicle_id):
         vehicle = Vehicle.query.filter(Vehicle.id == vehicle_id).one()
 
         vehicle.delete()
@@ -108,7 +113,8 @@ def create_app():
 
     # only manager and owner have access
     @app.route('/sales')
-    def get_sales():
+    @requires_auth('get:sales')
+    def get_sales(token):
         sales = Sale.query.order_by(Sale.id).all()
 
         return jsonify({
@@ -118,7 +124,8 @@ def create_app():
 
     # only manager or owner have access to this
     @app.route('/sales', methods=['POST'])
-    def create_sale():
+    @requires_auth('post:sales')
+    def create_sale(token):
         body = request.get_json()
         if body.get('vehicle_id') == '' or body.get('customer_id') == '':
             abort(422)
@@ -150,7 +157,8 @@ def create_app():
         
     # only owner has access to this
     @app.route('/sales/<sale_id>', methods=['DELETE'])
-    def delete_sale(sale_id):
+    @requires_auth('delete:sales')
+    def delete_sale(token, sale_id):
         try:
             sale = Sale.query.filter(Sale.id == sale_id).one()
             if sale is None:
@@ -164,9 +172,10 @@ def create_app():
         except:
             abort(400)
 
-    # only manager and owner have access
+    # only salesrep, manager and owner have access
     @app.route('/customers')
-    def get_customers():
+    @requires_auth('get:customers')
+    def get_customers(token):
         customers = Customer.query.order_by(Customer.id).all()
 
         return jsonify({
@@ -174,8 +183,10 @@ def create_app():
             'customers': [customer.format() for customer in customers]
         })
 
+    # only salesrep, manager and owner have access
     @app.route('/customers', methods=['POST'])
-    def create_customer():
+    @requires_auth('post:customers')
+    def create_customer(token):
         body = request.get_json()
         if body.get('first_name') == '' or body.get('last_name') == '':
             abort(422)
@@ -199,8 +210,10 @@ def create_app():
         except:
             abort(400)
 
+    # only salesrep, manager and owner have access
     @app.route('/customers/<customer_id>', methods=['PATCH'])
-    def update_customer(customer_id):
+    @requires_auth('patch:customers')
+    def update_customer(token, customer_id):
         body = request.get_json()
 
         first_name = body.get('first_name')
@@ -241,8 +254,10 @@ def create_app():
         except:
             abort(400)
 
+    # only manager and owner can delete a customer
     @app.route('/customers/<customer_id>', methods=['DELETE'])
-    def delete_customer(customer_id):
+    @requires_auth('delete:customers')
+    def delete_customer(token, customer_id):
         try:
             customer = Customer.query.filter(Customer.id == customer_id).one()
 
@@ -288,5 +303,12 @@ def create_app():
             'error': 422,
             'message': 'unprocessable'
         }), 422
+    
+    @app.errorhandler(AuthError)
+    def hanle_auth_error(error):
+        print(error)
+        response = jsonify(error.error)
+        response.status_code = error.status_code
+        return response
 
     return app
