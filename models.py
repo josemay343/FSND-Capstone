@@ -3,8 +3,10 @@ from sqlalchemy import Column, String, Integer
 from flask_sqlalchemy import SQLAlchemy
 
 database_name = 'dealership'
-database_path = "postgresql://{}@{}/{}".format(
-    'yosef', 'localhost:5432', database_name)
+# database_path = "postgresql://{}@{}/{}".format(
+#     'yosef', 'localhost:5432', database_name)
+
+database_path = "postgres://dvveonaajlkbdz:34f073c181a21219901b6cbe99e3cdc00fe96ad87ca08495b7f864493ada61c1@ec2-54-166-167-192.compute-1.amazonaws.com:5432/d8lkc1uivdjn8a"
 db = SQLAlchemy()
 
 def setup_db(app, database_path=database_path):
