@@ -17,7 +17,7 @@ def create_app():
     app = Flask(__name__)
     setup_db(app)
 
-    migrate = Migrate(app, db, compare_type=True)
+    # migrate = Migrate(app, db, compare_type=True)
 
     cors = CORS(app, resources={r'/api/*': {'origins': '*'}})
 
@@ -29,7 +29,7 @@ def create_app():
             'Content-Type,Authorization,true')
         response.headers.add(
             'Access-Control-Allow-Methods',
-            'GET,PUT,POST,DELETE,OPTIONS')
+            'GET,POST,DELETE,OPTIONS')
         return response
 
     # public view
@@ -312,3 +312,5 @@ def create_app():
         return response
 
     return app
+
+app = create_app()

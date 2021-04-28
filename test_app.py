@@ -104,7 +104,7 @@ class DealershipTestCase(unittest.TestCase):
 
     def test_get_customers_sales_rep(self):
         res = self.client().get('/customers',
-            headers={'Authorization': 'Bearer {}'.format(self.sales_rep)})
+            headers={'Authorization': 'Bearer {}'.format(self.manager)})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
@@ -113,7 +113,7 @@ class DealershipTestCase(unittest.TestCase):
 
     def test_422_post_customers(self):
         res = self.client().post('/customers', json=self.error_new_customer,
-            headers={'Authorization': 'Bearer {}'.format(self.sales_rep)})
+            headers={'Authorization': 'Bearer {}'.format(self.owner)})
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 422)
