@@ -9,7 +9,7 @@ database_name = 'dealership'
 db = SQLAlchemy()
 
 def setup_db(app):
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('DATABASE_URL')
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('HEROKU_DATABASE_URL')
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config['JSON_SORT_KEYS'] = False
     db.app = app
