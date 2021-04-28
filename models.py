@@ -2,14 +2,15 @@ import os
 from sqlalchemy import Column, String, Integer
 from flask_sqlalchemy import SQLAlchemy
 
-database_name = 'dealership'
+# database_name = 'dealership'
 # database_path = "postgresql://{}@{}/{}".format(
 #     'yosef', 'localhost:5432', database_name)
 
+database_path = os.environ.get('DATABASE_URL')
 db = SQLAlchemy()
 
-def setup_db(app):
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get('HEROKU_DATABASE_URL')
+def setup_db(app, database_path=database_path):
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config['JSON_SORT_KEYS'] = False
     db.app = app

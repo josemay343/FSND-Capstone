@@ -3,7 +3,7 @@ import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
 
-from app import create_app
+from app import app
 from models import *
 
 class DealershipTestCase(unittest.TestCase):
@@ -11,12 +11,12 @@ class DealershipTestCase(unittest.TestCase):
 
     def setUp(self):
         """Define test variables and initialize app."""
-        self.app = create_app()
+        self.app = app
         self.client = self.app.test_client
         self.sales_rep = os.environ.get('SALES_REP')
         self.manager = os.environ.get('MANAGER')
         self.owner = os.environ.get('OWNER')
-        self.database_name = os.environ.get('TEST_DATABASE_NAME')
+        # self.database_name = os.environ.get('TEST_DATABASE_NAME')
         self.database_path = os.environ.get('TEST_DATABASE_URL')
         setup_db(self.app, self.database_path)
 
@@ -86,9 +86,9 @@ class DealershipTestCase(unittest.TestCase):
 
     def test_get_sales_manager(self):
         res = self.client().get('/sales',
-            headers={'Authorization': 'Bearer {}'.format(self.manager)})
+            headers={'Authorization':'Bearer {}'.format(self.manager)})
         data = json.loads(res.data)
-
+        
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(data['sales'])
