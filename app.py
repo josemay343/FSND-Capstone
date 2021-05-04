@@ -32,7 +32,7 @@ def create_app():
             'GET,POST,DELETE,OPTIONS')
         return response
 
-    # public view
+    # public access
     @app.route('/vehicles')
     def get_vehicles():
         vehicles = Vehicle.query.order_by(Vehicle.id).all()
@@ -41,6 +41,7 @@ def create_app():
             'success': True,
             'vehicles': [vehicle.format() for vehicle in vehicles]
         })
+
     # only salesrep, manager and owner have access
     @app.route('/vehicles', methods=['POST'])
     @requires_auth('post:vehicles')
@@ -102,14 +103,19 @@ def create_app():
     @app.route('/vehicles/<vehicle_id>', methods=['DELETE'])
     @requires_auth('delete:vehicles')
     def delete_vehicle(token, vehicle_id):
-        vehicle = Vehicle.query.filter(Vehicle.id == vehicle_id).one()
+        try:
+            vehicle = Vehicle.query.filter(Vehicle.id == vehicle_id).one()
+            if vehicle is None:
+                return(404)
+            else:   
+                vehicle.delete()
 
-        vehicle.delete()
-
-        return jsonify({
-            'success': True,
-            'deleted-vehicle': vehicle.format()
-        }), 200
+                return jsonify({
+                    'success': True,
+                    'deleted-vehicle': vehicle.format()
+                }), 200
+        except:
+            abort(400)
 
     # only manager and owner have access
     @app.route('/sales')
@@ -149,12 +155,6 @@ def create_app():
         except:
             abort(400)
 
-    # # only owner has access to this
-    # @app.route('/sales/<sale_id>', methods=['PATCH'])
-    # def update_sale(sale_id):
-    #     sale = Sale.query.filter(Sale.id == sale_id).one()
-
-        
     # only owner has access to this
     @app.route('/sales/<sale_id>', methods=['DELETE'])
     @requires_auth('delete:sales')
@@ -260,9 +260,8 @@ def create_app():
     def delete_customer(token, customer_id):
         try:
             customer = Customer.query.filter(Customer.id == customer_id).one()
-
             if customer is None:
-                abort(422)
+                abort(404)
             else:
                 customer.delete()
                 return jsonify({
@@ -271,7 +270,7 @@ def create_app():
                 }), 200
         except:
             abort(400)
-        
+
     @app.errorhandler(400)
     def not_found(error):
         return jsonify({

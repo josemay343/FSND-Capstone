@@ -12,7 +12,8 @@ API_AUDIENCE = os.environ.get('API_AUDIENCE')
 
 
 '''
-https://fsnd343.us.auth0.com/authorize?audience=dealership&response_type=token&client_id=BtFDNnoyGIDj2pbHbXZx2w6eItJ7UVQ4&redirect_uri=https://127.0.0.1:5000/results
+Auth0 Domain
+https://fsnd343.us.auth0.com/authorize?audience=dealership&response_type=token&client_id=BtFDNnoyGIDj2pbHbXZx2w6eItJ7UVQ4&redirect_uri=http://127.0.0.1:5000/login-results
 '''
 
 ## AuthError Exception
